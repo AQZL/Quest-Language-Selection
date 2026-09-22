@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "Язык книги заданий",
+  "ftbqlang.screen.title": "Выбор языка",
+  "ftbqlang.screen.subtitle": "Выберите язык книги заданий. Его можно изменить кнопкой с глобусом.",
+  "ftbqlang.screen.selected": "Текущий язык книги заданий",
+  "ftbqlang.message.saved": "Язык книги заданий: %s",
+  "ftbqlang.message.unavailable": "Этот язык книги заданий больше недоступен. Выберите другой."
+}

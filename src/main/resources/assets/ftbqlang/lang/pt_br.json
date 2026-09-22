@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "Idioma do livro de missões",
+  "ftbqlang.screen.title": "Seleção de idioma",
+  "ftbqlang.screen.subtitle": "Escolha o idioma do seu livro de missões. Você pode alterá-lo pelo botão do globo.",
+  "ftbqlang.screen.selected": "Idioma atual do livro de missões",
+  "ftbqlang.message.saved": "Idioma do livro de missões: %s",
+  "ftbqlang.message.unavailable": "Este idioma do livro de missões não está mais disponível. Escolha outro."
+}

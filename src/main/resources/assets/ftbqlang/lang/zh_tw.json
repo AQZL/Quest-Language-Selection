@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "任務書語言",
+  "ftbqlang.screen.title": "語言選擇",
+  "ftbqlang.screen.subtitle": "請選擇任務書的語言。之後可透過地球按鈕隨時變更。",
+  "ftbqlang.screen.selected": "目前任務書語言",
+  "ftbqlang.message.saved": "任務書語言：%s",
+  "ftbqlang.message.unavailable": "此任務書語言已無法使用，請選擇其他語言。"
+}

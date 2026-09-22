@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "Quest book language",
+  "ftbqlang.screen.title": "Language Selection",
+  "ftbqlang.screen.subtitle": "Choose a language for your quest book. You can change it with the globe button.",
+  "ftbqlang.screen.selected": "Current quest book language",
+  "ftbqlang.message.saved": "Quest book language: %s",
+  "ftbqlang.message.unavailable": "That quest book language is no longer available. Please choose another."
+}

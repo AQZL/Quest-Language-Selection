@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "Langue du livre de quêtes",
+  "ftbqlang.screen.title": "Choix de la langue",
+  "ftbqlang.screen.subtitle": "Choisissez la langue de votre livre de quêtes. Le bouton globe permet de la modifier à tout moment.",
+  "ftbqlang.screen.selected": "Langue actuelle du livre de quêtes",
+  "ftbqlang.message.saved": "Langue du livre de quêtes : %s",
+  "ftbqlang.message.unavailable": "Cette langue n'est plus disponible pour le livre de quêtes. Veuillez en choisir une autre."
+}

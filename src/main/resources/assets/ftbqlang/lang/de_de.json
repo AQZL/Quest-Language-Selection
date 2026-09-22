@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "Questbuchsprache",
+  "ftbqlang.screen.title": "Sprachauswahl",
+  "ftbqlang.screen.subtitle": "Wähle die Sprache deines Questbuchs. Du kannst sie jederzeit über die Weltkugel ändern.",
+  "ftbqlang.screen.selected": "Aktuelle Questbuchsprache",
+  "ftbqlang.message.saved": "Questbuchsprache: %s",
+  "ftbqlang.message.unavailable": "Diese Questbuchsprache ist nicht mehr verfügbar. Bitte wähle eine andere."
+}

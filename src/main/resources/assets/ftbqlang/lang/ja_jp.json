@@ -1,0 +1,8 @@
+{
+  "ftbqlang.button.language": "クエストブックの言語",
+  "ftbqlang.screen.title": "言語選択",
+  "ftbqlang.screen.subtitle": "クエストブックの言語を選択してください。地球ボタンからいつでも変更できます。",
+  "ftbqlang.screen.selected": "現在のクエストブックの言語",
+  "ftbqlang.message.saved": "クエストブックの言語：%s",
+  "ftbqlang.message.unavailable": "このクエストブックの言語は利用できなくなりました。別の言語を選択してください。"
+}

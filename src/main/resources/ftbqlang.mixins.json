@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.ftbqlang.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "BaseScreenMixin",
+    "ClientQuestFileMixin",
+    "OtherButtonsPanelBottomMixin",
+    "QuestScreenMixin",
+    "SyncTranslationTableMessageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
