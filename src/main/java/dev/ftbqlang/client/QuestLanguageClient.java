@@ -74,8 +74,8 @@ public final class QuestLanguageClient {
             bookWasOpen = false;
             selector.leftBook();
             activePanel = null;
-            // FTB creates a fresh QuestScreen next time the book is opened.
-            pendingTranslationRefresh = null;
+            // An editor can temporarily cover the book and later reuse the same
+            // QuestScreen. Keep any translation refresh until that screen is visible.
             return;
         }
         // ClientTickEvent.Post runs outside FTB's modalPanels.forEach(Panel::tick).
@@ -87,8 +87,8 @@ public final class QuestLanguageClient {
             applyPendingTranslationRefresh(screen);
             return;
         }
-        // FTB rebuilds QuestScreen on translation updates. Track entering/leaving the book,
-        // rather than screen identity, to avoid a packet -> refresh -> query loop.
+        // Track entering/leaving the book rather than screen identity: FTB can still
+        // rebuild QuestScreen for non-translation edits and other state changes.
         if (!bookWasOpen) {
             bookWasOpen = true;
             PacketDistributor.sendToServer(new QueryPayload(true));

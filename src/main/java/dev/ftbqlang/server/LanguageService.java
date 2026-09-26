@@ -1,9 +1,7 @@
 package dev.ftbqlang.server;
 
-import dev.architectury.networking.NetworkManager;
-import dev.ftb.mods.ftbquests.net.SyncTranslationTableMessage;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
-import dev.ftb.mods.ftbquests.quest.translation.TranslationTable;
+import dev.ftbqlang.mixin.TranslationManagerAccessor;
 import dev.ftbqlang.network.LanguageStatePayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -30,6 +28,9 @@ public final class LanguageService {
             return;
         }
         LanguageCatalog catalog = LanguageCatalog.scan(file.getFolder().resolve("lang"));
+        var translations = file.getTranslationManager();
+        LanguagePolicy.initializeMissingTables(
+                ((TranslationManagerAccessor) translations).ftbqlang$getTables(), catalog.tables());
         List<String> languages = catalog.languages();
         LanguagePreferences preferences = LanguagePreferences.get(player.serverLevel().getServer());
         LanguagePolicy.Preference previous = preferences.get(player.getUUID());
@@ -46,12 +47,9 @@ public final class LanguageService {
         var toSend = new LinkedHashSet<>(List.of("en_us", file.getFallbackLocale(), decision.selected()));
         toSend.remove("");
         for (String locale : toSend) {
-            TranslationTable table = catalog.tables().get(locale);
-            if (table != null) {
-                NetworkManager.sendToPlayer(player, new SyncTranslationTableMessage(locale, table));
-            } else {
-                file.getTranslationManager().sendTableToPlayer(player, locale);
-            }
+            // Disk discovery must never roll back a live edit when returning from the
+            // editor or changing language before FTB saves its translation tables.
+            translations.sendTableToPlayer(player, locale);
         }
         PacketDistributor.sendToPlayer(player,
                 new LanguageStatePayload(languages, decision.selected(), decision.prompt()));

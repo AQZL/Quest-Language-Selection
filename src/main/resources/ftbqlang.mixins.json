@@ -1,14 +1,18 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dev.ftbqlang.mixin.client",
+  "package": "dev.ftbqlang.mixin",
   "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "TranslationManagerAccessor"
+  ],
   "client": [
-    "BaseScreenMixin",
-    "ClientQuestFileMixin",
-    "OtherButtonsPanelBottomMixin",
-    "QuestScreenMixin",
-    "SyncTranslationTableMessageMixin"
+    "client.BaseScreenMixin",
+    "client.ClientQuestFileMixin",
+    "client.OtherButtonsPanelBottomMixin",
+    "client.QuestScreenMixin",
+    "client.SyncTranslationTableMessageMixin",
+    "client.SyncTranslationMessageToClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

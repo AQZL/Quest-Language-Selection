@@ -2,6 +2,7 @@ package dev.ftbqlang.server;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /** Pure language-selection rules, shared by discovery, persistence and packet validation. */
@@ -27,6 +28,12 @@ public final class LanguagePolicy {
         }
         String locale = filename.substring(0, filename.length() - 5);
         return isValidLocale(locale) ? normalize(locale) : "";
+    }
+
+    /** Discover newly added files without reverting edits which FTB has not saved yet. */
+    public static <T> void initializeMissingTables(Map<String, T> liveTables, Map<String, T> diskTables) {
+        // An empty live table is authoritative too: its text may have just been deleted.
+        diskTables.forEach(liveTables::putIfAbsent);
     }
 
     public static Decision decide(List<String> available, Preference previous, String clientLocale,
