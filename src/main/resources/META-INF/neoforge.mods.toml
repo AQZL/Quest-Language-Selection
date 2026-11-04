@@ -34,22 +34,22 @@ ordering="AFTER"
 side="BOTH"
 
 [[dependencies.ftbqlang]]
-modId="ftblibrary"
+modId="ftbquests"
 type="required"
-versionRange="[2101.1.31,2102)"
+versionRange="[2101.1.38,2102)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.ftbqlang]]
-modId="ftbteams"
+modId="ftblibrary"
 type="required"
-versionRange="[2101.1.9,2102)"
+versionRange="[2101.1.39,2102)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.ftbqlang]]
 modId="architectury"
 type="required"
-versionRange="[13.0.8,14)"
+versionRange="[13.0.11,14)"
 ordering="AFTER"
 side="BOTH"

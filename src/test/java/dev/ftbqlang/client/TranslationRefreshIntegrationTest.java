@@ -1,6 +1,8 @@
 package dev.ftbqlang.client;
 
 import org.junit.jupiter.api.Test;
+import org.objectweb.asm.AnnotationVisitor;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -37,10 +39,16 @@ class TranslationRefreshIntegrationTest {
         assertEquals(1, clearCache.size());
         assertEquals("lambda$handle$2", clearCache.getFirst().caller());
         var handler = calls.stream().filter(call -> call.caller().equals("lambda$handle$2")).toList();
-        assertTrue(handler.stream().anyMatch(call -> call.method().equals("ifLeft")));
-        assertTrue(handler.stream().anyMatch(call -> call.method().equals("ifRight")));
-        assertEquals(clearCache.getFirst(), handler.getLast(),
-                "Both title strings and description lists must be applied before our refresh hook");
+        int clearIndex = handler.indexOf(clearCache.getFirst());
+        int titleIndex = indexOfMethod(handler, "ifLeft");
+        int descriptionIndex = indexOfMethod(handler, "ifRight");
+        assertTrue(titleIndex >= 0 && titleIndex < clearIndex,
+                "Title strings must be applied before our refresh hook");
+        assertTrue(descriptionIndex >= 0 && descriptionIndex < clearIndex,
+                "Description lists must be applied before our refresh hook");
+        // FTB 2101.1.38 refreshes the open quest screen in place after clearing the
+        // caches; our hook runs before that and must never rebuild the screen itself.
+        assertTrue(indexOfMethod(handler, "getQuestScreen") > clearIndex);
     }
 
     @Test
@@ -76,12 +84,18 @@ class TranslationRefreshIntegrationTest {
     }
 
     @Test
-    void backdropHookMatchesTheFtbLibraryDrawCall() throws IOException {
+     void backdropHookMatchesTheFtbLibraryDrawForegroundCall() throws IOException {
+        // FTB Library 2101.1.39 moved the modal backdrop from BaseScreen.draw() into
+        // BaseScreen.drawForeground(); the old hook no longer applies to anything.
+        assertEquals(List.of("drawForeground"), modifyArgMethodTargets("dev/ftbqlang/mixin/client/BaseScreenMixin"));
         var calls = callsIn("dev/ftb/mods/ftblibrary/ui/BaseScreen");
-        assertEquals(1, calls.stream().filter(call -> call.caller().equals("draw")
+        assertEquals(1, calls.stream().filter(call -> call.caller().equals("drawForeground")
                 && call.owner().equals("dev/ftb/mods/ftblibrary/icon/Color4I")
                 && call.method().equals("rgba")
                 && call.descriptor().equals("(I)Ldev/ftb/mods/ftblibrary/icon/Color4I;")).count());
+        assertFalse(calls.stream().anyMatch(call -> call.caller().equals("draw")
+                && call.owner().equals("dev/ftb/mods/ftblibrary/icon/Color4I")),
+                "The backdrop is no longer drawn by BaseScreen.draw()");
     }
 
     @Test
@@ -97,6 +111,59 @@ class TranslationRefreshIntegrationTest {
                     && call.owner().equals("dev/ftb/mods/ftbquests/client/gui/quests/QuestScreen")));
         }
     }
+
+    private static int indexOfMethod(List<Call> calls, String method) {
+        for (int index = 0; index < calls.size(); index++) {
+            if (calls.get(index).method().equals(method)) {
+                return index;
+            }
+        }
+        return -1;
+    }
+    private static List<String> modifyArgMethodTargets(String className) throws IOException {
+        var targets = new ArrayList<String>();
+        try (var stream = TranslationRefreshIntegrationTest.class.getResourceAsStream("/" + className + ".class")) {
+            assertNotNull(stream, "Missing compiled class: " + className);
+            new ClassReader(stream).accept(new ClassVisitor(Opcodes.ASM9) {
+                @Override
+                public MethodVisitor visitMethod(int access, String name, String descriptor,
+                                                 String signature, String[] exceptions) {
+                    return new MethodVisitor(Opcodes.ASM9) {
+                        @Override
+                        public AnnotationVisitor visitAnnotation(String annotation, boolean visible) {
+                            if (!annotation.equals("Lorg/spongepowered/asm/mixin/injection/ModifyArg;")) {
+                                return null;
+                            }
+                            return new AnnotationVisitor(Opcodes.ASM9) {
+                                @Override
+                                public AnnotationVisitor visitArray(String name) {
+                                    if (!name.equals("method")) {
+                                        return null;
+                                    }
+                                    return new AnnotationVisitor(Opcodes.ASM9) {
+                                        @Override
+                                        public void visit(String key, Object value) {
+                                            if (value instanceof String target) {
+                                                targets.add(target);
+                                            }
+                                        }
+                                    };
+                                }
+                                @Override
+                                public void visit(String key, Object value) {
+                                    if (key.equals("method") && value instanceof String single) {
+                                        targets.add(single);
+                                    }
+                                }
+                            };
+                        }
+                    };
+                }
+            }, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+        }
+        return targets;
+    }
+
 
     private static List<Call> callsIn(String className) throws IOException {
         var calls = new ArrayList<Call>();
